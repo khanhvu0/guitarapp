@@ -25,7 +25,6 @@ const SongList = () => {
     }
   }, []);
 
-
   const openDeleteChordModal = (index) => {
     setSelectedSongIndex(index)
     setIsDeleteChordModalOpen(true);
@@ -70,7 +69,7 @@ const SongList = () => {
     setSongChords(updatedChords);
     localStorage.setItem("songList", JSON.stringify(updatedSongs));
     localStorage.setItem("songChords", JSON.stringify(updatedChords));
-    window.location.reload();
+    location.reload();
   };
 
   const addChord = (index, chord) => {
@@ -78,6 +77,7 @@ const SongList = () => {
     updatedChords[index] = [...updatedChords[index], chord];
     setSongChords(updatedChords);
     localStorage.setItem("songChords", JSON.stringify(updatedChords));
+    location.reload();
   };
 
   const deleteChord = (chordIndex) => {
@@ -95,51 +95,55 @@ const SongList = () => {
 
   return (
     <div className="container">
-      <div className="box-border w-full h-full mx-auto p-8">
-        <button className="relative inline-flex items-center justify-center p-0.5 mb-2 mr-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-purple-600 to-blue-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-white dark:text-black focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800">
+      <div className="box-border w-full h-full mx-auto px-8">
+        <button className="relative inline-flex items-center justify-center p-0.5 mb-2 mr-2 mt-2 overflow-hidden text-sm lg:text-lg font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-purple-600 to-blue-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-white dark:text-black focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800">
           <span
-            className="relative text-lg px-5 py-2.5 transition-all ease-in duration-75 bg-white rounded-md group-hover:bg-opacity-0"
+            className="relative px-3 py-2.5 transition-all ease-in duration-75 bg-white rounded-md group-hover:bg-opacity-0"
             onClick={openSongModal}> Add Song
           </span>
         </button>
-        {/*<h3>Your songs:</h3>*/}
+        <h3 className="text-xl lg:text-2xl font-semibold mt-4" >Your songs:</h3>
+
         <ul className="list-none mt-4">
           {songs.map((songName, index) => (
-            <li key={index} className="justify-between items-center border-t border-gray-300 pb-8 pt-2">
-              <div className="grid grid-cols-2 gap-4 py-4">
+            <li key={index} className="justify-between items-center border-t border-gray-300 pb-3 pt-2">
+              {/*<div className="grid grid-cols-2 gap-4 py-4">*/}
                 <div>
-                  <span className="text-2xl font-semibold p-2">{songName}</span>
+                  <div className="text-xl lg:text-2xl breeak-words break-all font-semibold p-2">{songName}</div>
                 </div>
 
-                <div className="flex justify-end items-center">
-                  <button className="relative inline-flex items-center justify-center p-0.5 mb-2 mr-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-green-400 to-blue-600 group-hover:from-green-400 group-hover:to-blue-600 hover:text-white dark:text-black focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800">
+              {/*</div>*/}
+              {songChords[index] && Array.isArray(songChords[index]) &&
+                <div className="chords">
+                  {songChords[index].map((chord, chordIndex) => (
+                    <div key={chordIndex} className="chord-container">
+                      <div className="chord-image" dangerouslySetInnerHTML={{ __html: `<ins class="scales_chords_api" chord="${chord}"></ins>` }}></div>
+                      <div className="chord-sound float-right" dangerouslySetInnerHTML={{ __html: `<ins class="scales_chords_api" chord="${chord}" output="sound"></ins>` }}></div>
+                    </div>
+                  ))}
+                </div> }
+
+                <div className="edit-buttons flex justify-end items-center pt-4">
+                  <button className="relative inline-flex items-center justify-center p-0.5 mb-2 mr-2 overflow-hidden text-xs lg:text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-green-400 to-blue-600 group-hover:from-green-400 group-hover:to-blue-600 hover:text-white dark:text-black focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800">
                     <span
-                      className="relative px-3 py-2.5 transition-all ease-in duration-75 bg-white rounded-md group-hover:bg-opacity-0" onClick={() => openChordModal(index)}>
+                      className="relative px-2.5 py-2.5 transition-all ease-in duration-75 bg-white rounded-md group-hover:bg-opacity-0" onClick={() => openChordModal(index)}>
                     Add Chord
                     </span>
                   </button>
-                  <button className="relative inline-flex items-center justify-center p-0.5 mb-2 mr-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-pink-500 to-orange-400 group-hover:from-pink-500 group-hover:to-orange-400 hover:text-white dark:text-black focus:ring-4 focus:outline-none focus:ring-pink-200 dark:focus:ring-pink-800">
+                  <button className="relative inline-flex items-center justify-center p-0.5 mb-2 mr-2 overflow-hidden text-xs lg:text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-pink-500 to-orange-400 group-hover:from-pink-500 group-hover:to-orange-400 hover:text-white dark:text-black focus:ring-4 focus:outline-none focus:ring-pink-200 dark:focus:ring-pink-800">
                     <span
-                      className="relative px-3 py-2.5 transition-all ease-in duration-75 bg-white rounded-md group-hover:bg-opacity-0" onClick={() => openDeleteChordModal(index)}>
+                      className="relative px-2.5 py-2.5 transition-all ease-in duration-75 bg-white rounded-md group-hover:bg-opacity-0" onClick={() => openDeleteChordModal(index)}>
                     Delete Chord
                     </span>
                   </button>
-                  <button className="relative inline-flex items-center justify-center p-0.5 mb-2 mr-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-orange-400 to-red-500 group-hover:from-orange-400 group-hover:via-orange-400 group-hover:to-red-500 hover:text-white dark:text-black focus:ring-4 focus:outline-none focus:ring-red-100 dark:focus:ring-red-400">
+                  <button className="relative inline-flex items-center justify-center p-0.5 mb-2 mr-2 overflow-hidden text-xs lg:text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-orange-400 to-red-500 group-hover:from-orange-400 group-hover:via-orange-400 group-hover:to-red-500 hover:text-white dark:text-black focus:ring-4 focus:outline-none focus:ring-red-100 dark:focus:ring-red-400">
                     <span
-                      className="relative px-3 py-2.5 transition-all ease-in duration-75 bg-white rounded-md group-hover:bg-opacity-0" onClick={() => deleteSong(index)}>
+                      className="relative px-2.5 py-2.5 transition-all ease-in duration-75 bg-white rounded-md group-hover:bg-opacity-0" onClick={() => deleteSong(index)}>
                     Delete Song
                     </span>
                   </button>
                 </div>
 
-              </div>
-              {songChords[index] && Array.isArray(songChords[index]) &&
-                <div className="chord-images">
-                        {songChords[index].map((chord, chordIndex) => (
-                          <div key={chordIndex} className="chord-image" dangerouslySetInnerHTML={{ __html: `<ins class="scales_chords_api" chord="${chord}"></ins>` }}></div>
-                        ))}
-                </div>
-              }
             </li>
           ))}
         </ul>
