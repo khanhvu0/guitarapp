@@ -7,7 +7,7 @@ const DeleteChordModal = ({ isOpen, onClose, songChords, onDeleteChord}) => {
   const handleDeleteChord = () => {
     setError(""); // Clear any previous error messages
     if (songChords) {
-      const chordIndex = songChords.indexOf(chordToDelete);
+      const chordIndex = songChords.indexOf(chordToDelete.toLowerCase());
       if (chordIndex !== -1) {
         onDeleteChord(chordIndex);
         setChordToDelete("");
@@ -23,7 +23,7 @@ const DeleteChordModal = ({ isOpen, onClose, songChords, onDeleteChord}) => {
 
   return isOpen ? (
     <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
-      <div className="bg-white p-4 rounded-md shadow-md w-1/2">
+      <div className="bg-white p-4 rounded-md shadow-md w-3/4 lg:w-1/2">
         <h2 className="text-lg lg:text-2xl font-semibold mb-2">Delete Chord</h2>
         <input
           type="text"
@@ -33,8 +33,8 @@ const DeleteChordModal = ({ isOpen, onClose, songChords, onDeleteChord}) => {
           onChange={(e) => setChordToDelete(e.target.value)}
         />
         {error && <div className="text-red-500 text-sm mb-2">{error}</div>}
-        <div className="flex justify-end mt-4">
-          <button
+        <div className="flex justify-end mt-2">
+          <button type="submit"
             className="bg-red-500 text-sm lg:text-lg text-white p-2 rounded-md hover:bg-red-600 mr-2"
             onClick={handleDeleteChord}
           >
