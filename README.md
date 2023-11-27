@@ -6,7 +6,7 @@ This app allows you to note down and save the guitar chord progressions of your 
 
 - Made with images and API from https://www.scales-chords.com/api/
 - Along with ReactJS, Vite, and TailwindCSS
-- Can run locally by installing React and Django backend at https://github.com/khanhvu0/guitarapp_backend
+- Can run locally with Django + MongoDB backend at https://github.com/khanhvu0/guitarapp_backend
 
 <br />
 <br />
