@@ -7,7 +7,7 @@ function App() {
 
   return (
     <>
-        <div className="grid gap-4">
+        <div className="w-screen">
             <Title text="Guitar Chord Book" />
             <SongList />
         </div>
