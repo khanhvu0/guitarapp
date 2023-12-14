@@ -7,15 +7,13 @@ import "../styles/SongList.css"
 const SongList = () => {
   const [songs, setSongs] = useState([]);
   const [isSongModalOpen, setIsSongModalOpen] = useState(false);
-  const [songChords, setSongChords] = useState(Array.from({ length: songs.length }, () => []));
+  const [songChords, setSongChords] = useState(Array.from({ length: songs.length }, () => {}));
   const [isChordModalOpen, setIsChordModalOpen] = useState(false);
   const [selectedSongIndex, setSelectedSongIndex] = useState(null);
-  const [isDeleteChordModalOpen, setIsDeleteChordModalOpen] = useState(false);
   const [editingNameIndex, setEditingNameIndex] = useState(null);
   const [editedName, setEditedName] = useState("");
+  const [deleteChordIndex, setDeleteChordIndex] = useState(null);
 
-  //BUG: adding invalid/non-existent chord will add the Ebm chord
-  //BUG: deleting chord that was not added right before does not work
 
   useEffect(() => {
     const savedSongs = localStorage.getItem("songList");
@@ -28,16 +26,6 @@ const SongList = () => {
       setSongChords(JSON.parse(savedSongChords));
     }
   }, []);
-
-  const openDeleteChordModal = (index) => {
-    setSelectedSongIndex(index)
-    setIsDeleteChordModalOpen(true);
-  };
-
-  const closeDeleteChordModal = () => {
-    setIsDeleteChordModalOpen(false);
-    setSelectedSongIndex(null);
-  };
 
   const openChordModal = (index) => {
     setSelectedSongIndex(index);
@@ -101,30 +89,38 @@ const SongList = () => {
     console.log(`Deleted song`)
     localStorage.setItem("songList", JSON.stringify(updatedSongs));
     localStorage.setItem("songChords", JSON.stringify(updatedChords));
-    location.reload();
   };
 
-  const addChord = (index, chord) => {
+  const addChord = (index, chordToAdd) => {
     const updatedChords = [...songChords];
-    const chordToAdd = updatedChords[index];
-    updatedChords[index] = [...updatedChords[index], chord];
+    updatedChords[index] = [...updatedChords[index], chordToAdd];
     setSongChords(updatedChords);
     console.log(`Added chord ${chordToAdd}`)
     localStorage.setItem("songChords", JSON.stringify(updatedChords));
-    location.reload();
+  };
+
+  const openDeleteChordModal = (index, chord_index) => {
+    setSelectedSongIndex(index);
+    setDeleteChordIndex(chord_index);
+  };
+
+  const closeDeleteChordModal = () => {
+    setDeleteChordIndex(null);
+    setSelectedSongIndex(null)
   };
 
   const deleteChord = (chordIndex) => {
-    const updatedChords = songChords[selectedSongIndex];
-    const chordToDelete = updatedChords[chordIndex];
-    updatedChords.splice(updatedChords.indexOf(chordToDelete), 1);
-    setSongChords((prevSongChords) => {
-      const newSongChords = [...prevSongChords];
-      newSongChords[selectedSongIndex] = updatedChords;
-      return newSongChords;
-    });
-    console.log(`Added chord ${chordToDelete}`)
-    localStorage.setItem("songChords", JSON.stringify(updatedChords));
+    const updatedChords = [...songChords];
+    const updatedSongChords = updatedChords[selectedSongIndex];
+
+    if (updatedSongChords && Array.isArray(updatedSongChords)) {
+      updatedSongChords.splice(chordIndex, 1);
+      updatedChords[selectedSongIndex] = updatedSongChords;
+
+      setSongChords(updatedChords);
+      closeDeleteChordModal();
+      localStorage.setItem("songChords", JSON.stringify(updatedChords));
+    }
   };
 
   const addPremadeChord = (index, songName) => {
@@ -139,6 +135,7 @@ const SongList = () => {
     localStorage.setItem("songChords", JSON.stringify(updatedChords));
     location.reload();
   };
+
 
   return (
     <div className="flex w-screen">
@@ -182,94 +179,47 @@ const SongList = () => {
                   )}
                 </div>
 
-                {songChords[index] && Array.isArray(songChords[index]) &&
-                  <div className="chords">
-                    {songChords[index].map((chord, chordIndex) => (
-                      <div key={chordIndex} className="chord-container">
-                        <div className="chord-image" dangerouslySetInnerHTML={{ __html: `<ins class="scales_chords_api" chord="${chord}"></ins>` }}></div>
-                        <div className="chord-sound float-right" dangerouslySetInnerHTML={{ __html: `<ins class="scales_chords_api" chord="${chord}" output="sound"></ins>` }}></div>
-                      </div>
-                    ))}
-                  </div> }
-
-                <div className="edit-buttons flex justify-end items-center pt-4">
-                  <button className="relative inline-flex items-center justify-center p-0.5 mb-2 mr-2 overflow-hidden text-xs lg:text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-green-400 to-blue-600 group-hover:from-green-400 group-hover:to-blue-600 hover:text-white dark:text-black focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800">
-                    <span
-                      className="relative px-2.5 py-2.5 transition-all ease-in duration-75 bg-white rounded-md group-hover:bg-opacity-0" onClick={() => openChordModal(index)}>
-                    Add Chord
-                    </span>
-                  </button>
-                  <button className="relative inline-flex items-center justify-center p-0.5 mb-2 mr-2 overflow-hidden text-xs lg:text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-pink-500 to-orange-400 group-hover:from-pink-500 group-hover:to-orange-400 hover:text-white dark:text-black focus:ring-4 focus:outline-none focus:ring-pink-200 dark:focus:ring-pink-800">
-                    <span
-                      className="relative px-2.5 py-2.5 transition-all ease-in duration-75 bg-white rounded-md group-hover:bg-opacity-0" onClick={() => openDeleteChordModal(index)}>
-                    Delete Chord
-                    </span>
-                  </button>
-                  <button className="relative inline-flex items-center justify-center p-0.5 mb-2 mr-2 overflow-hidden text-xs lg:text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-orange-400 to-red-500 group-hover:from-orange-400 group-hover:via-orange-400 group-hover:to-red-500 hover:text-white dark:text-black focus:ring-4 focus:outline-none focus:ring-red-100 dark:focus:ring-red-400">
-                    <span
-                      className="relative px-2.5 py-2.5 transition-all ease-in duration-75 bg-white rounded-md group-hover:bg-opacity-0" onClick={() => deleteSong(index)}>
-                    Delete Song
-                    </span>
-                  </button>
+              {songChords[index] && Array.isArray(songChords[index]) && (
+                <div className="chords">
+                  {songChords[index].map((chord, chordIndex) => (
+                    <div key={chordIndex} className="chord-container">
+                      <img
+                        src={chord}
+                        alt={`Chord ${chordIndex + 1} Image`}
+                        className="chord-image"
+                      />
+                      <button
+                        onClick={() => openDeleteChordModal(index, chordIndex)}
+                        className="float-right focus:outline-none"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ff0000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                      </button>
+                    </div>
+                  ))}
                 </div>
+              )}
 
-              </li>
-            ))}
-          </ul>
+              <div className="edit-buttons flex justify-end items-center mt-6">
+                <button className="relative inline-flex items-center justify-center p-0.5 mb-2 mr-2 overflow-hidden text-xs lg:text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-green-400 to-blue-600 group-hover:from-green-400 group-hover:to-blue-600 hover:text-white dark:text-black focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800">
+                  <span
+                    className="relative px-2.5 py-2.5 transition-all ease-in duration-75 bg-white rounded-md group-hover:bg-opacity-0" onClick={() => openChordModal(index)}>
+                  Add Chord
+                  </span>
+                </button>
+                <button className="relative inline-flex items-center justify-center p-0.5 mb-2 mr-2 overflow-hidden text-xs lg:text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-orange-400 to-red-500 group-hover:from-orange-400 group-hover:via-orange-400 group-hover:to-red-500 hover:text-white dark:text-black focus:ring-4 focus:outline-none focus:ring-red-100 dark:focus:ring-red-400">
+                  <span
+                    className="relative px-2.5 py-2.5 transition-all ease-in duration-75 bg-white rounded-md group-hover:bg-opacity-0" onClick={() => deleteSong(index)}>
+                  Delete Song
+                  </span>
+                </button>
+              </div>
+            </li>
+          ))}
+        </ul>
 
-          <AddSongModal isOpen={isSongModalOpen} onClose={closeSongModal} onAdd={addSong} />
-          <AddChordModal isOpen={isChordModalOpen} onClose={closeChordModal} onAddChord={addChord} selectedSongIndex={selectedSongIndex}/>
-          <DeleteChordModal isOpen={isDeleteChordModalOpen} onClose={closeDeleteChordModal} songChords={songChords[selectedSongIndex]} onDeleteChord={deleteChord}
-        />
-        </div>
-      </div>
-
-      <div className="w-1/5 min-w-fit flex justify-center">
-        <div className="min-w-fit p-7 -mt-16 mr-5 lg:ml-4 h-fit border-2 rounded-2xl">
-          <h1 className="mb-5 flex justify-center items-center text-2xl font-medium">Premade Songs</h1>
-          <ul>
-            <li className="mt-3 w-full px-2 py-2 pb-4 pl-1 border-b border-gray-200 rounded-t-lg dark:border-gray-600">
-              <div className="text-xl">Creep - Radiohead</div>
-              <button className="relative inline-flex items-center justify-center p-0.5 mb-2 mr-2 mt-2 overflow-hidden text-sm font-normal text-gray-900 rounded-lg group bg-gradient-to-br from-green-500 to-green-300 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-white dark:text-black focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800">
-                <span
-                    className="relative px-1.5 py-1 transition-all ease-in duration-75 bg-white rounded-md group-hover:bg-opacity-0"
-                    onClickCapture={() => addSong("Creep - Radiohead")}
-                    onClick={() => addPremadeChord(songChords.length-1, "Creep")}
-                    > Add Song
-                </span>
-              </button>
-            </li>
-            <li className="mt-3 w-full px-2 py-2 pb-4 pl-1 border-b border-gray-200 dark:border-gray-600">
-              <div className="text-xl">From The Start - Laufey</div>
-              <button className="relative inline-flex items-center justify-center p-0.5 mb-2 mr-2 mt-2 overflow-hidden text-sm font-normal text-gray-900 rounded-lg group bg-gradient-to-br from-green-500 to-green-300 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-white dark:text-black focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800">
-                <span
-                    className="relative px-1.5 py-1 transition-all ease-in duration-75 bg-white rounded-md group-hover:bg-opacity-0"
-                    onClickCapture={() => addSong("From The Start - Laufey")}
-                    onClick={() => addPremadeChord(songChords.length-1, "From The Start")}
-                > Add Song
-                </span>
-              </button>
-            </li>
-            <li className="mt-3 w-full px-2 py-2 pb-4 pl-1 border-b border-gray-200 dark:border-gray-600">
-              <div className="text-xl">Love - Keyshia Cole</div>
-              <button className="relative inline-flex items-center justify-center p-0.5 mb-2 mr-2 mt-2 overflow-hidden text-sm font-normal text-gray-900 rounded-lg group bg-gradient-to-br from-green-500 to-green-300 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-white dark:text-black focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800">
-                            <span
-                                className="relative px-1.5 py-1 transition-all ease-in duration-75 bg-white rounded-md group-hover:bg-opacity-0"
-                            > Add Song
-                            </span>
-              </button>
-            </li>
-            <li className="mt-3 w-full px-2 py-2 pb-4 pl-1 border-b border-gray-200 dark:border-gray-600">
-              <div className="text-xl">Season - Wave To Earth</div>
-              <button className="relative inline-flex items-center justify-center p-0.5 mb-2 mr-2 mt-2 overflow-hidden text-sm font-normal text-gray-900 rounded-lg group bg-gradient-to-br from-green-500 to-green-300 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-white dark:text-black focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800">
-                            <span
-                                className="relative px-1.5 py-1 transition-all ease-in duration-75 bg-white rounded-md group-hover:bg-opacity-0"
-                            > Add Song
-                            </span>
-              </button>
-            </li>
-          </ul>
-        </div>
+        <AddSongModal isOpen={isSongModalOpen} onClose={closeSongModal} onAdd={addSong} />
+        <AddChordModal isOpen={isChordModalOpen} onClose={closeChordModal} onAddChord={addChord} selectedSongIndex={selectedSongIndex}/>
+        <DeleteChordModal isOpen={deleteChordIndex !== null} onClose={closeDeleteChordModal} onConfirmDelete={() => deleteChord(deleteChordIndex)}/>
       </div>
     </div>
   );

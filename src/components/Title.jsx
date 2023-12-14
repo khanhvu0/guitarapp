@@ -7,9 +7,8 @@ const Title = ({ text }) => {
         <h1 className="text-3xl font-semibold text-left">{text}</h1>
         <img className="w-8 h-8 ml-2" src="https://static-00.iconduck.com/assets.00/guitar-emoji-2048x2040-y3id6cnf.png" alt="Guitar emoji"/>
       </div>
-
-        <p className="text-xl font-semibold text-left"> - by Khanh Vu</p>
-        <div className="rounded w-2/5 mt-7 bg-gradient-to-r from-blue-800 to-black p-0.5" />
+        <p className="text-lg font-semibold text-left"> - by Khanh Vu</p>
+        <div className="border-b-4 rounded border-black w-1/2 mt-5" />
     </div>
   );
 };
