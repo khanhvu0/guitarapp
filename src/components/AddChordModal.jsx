@@ -16,7 +16,7 @@ const AddChordModal = ({ isOpen, onClose, onAddChord, selectedSongIndex }) => {
     try {
       if (chordInput.trim() !== "") {
         const formattedInput = chordInput.replace("#", "%23")
-        const response = await fetch(`http://localhost:8000/?chord_name=${formattedInput}`);
+        const response = await fetch(`http://18.144.70.123:8000/?chord_name=${formattedInput}`);
         if(!response.ok) {
           setVariation("No chord found for " + chordInput[0].toUpperCase() + chordInput.slice(1).toLowerCase())
           setChordImages(null);
