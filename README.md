@@ -1,12 +1,12 @@
 # Guitar Chord Book App
 
-(Note: v1 demo is deployed here at https://guitarchordbook-khanhvu.vercel.app/, does not include some new features shown below)
+http://guitarchordbook.icu  
   
 This app allows you to note down and save the guitar chord progressions of your favorite songs!
 
 - Made with images and API from https://www.scales-chords.com/api/
-- Along with ReactJS, Vite, and TailwindCSS
-- Can run locally with Django + MongoDB backend at https://github.com/khanhvu0/guitarapp_backend
+- Along with ReactJS and TailwindCSS
+- Deployed on an AWS EC2 instance with Django + MongoDB backend at https://github.com/khanhvu0/guitarapp_backend
 
 <br />
 <br />
