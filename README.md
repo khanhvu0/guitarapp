@@ -1,6 +1,6 @@
 # Guitar Chord Book App
 
-http://guitarchordbook.icu  
+Try it out here: http://guitarchordbook.icu  
   
 This app allows you to note down and save the guitar chord progressions of your favorite songs!
 
