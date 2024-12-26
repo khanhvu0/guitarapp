@@ -1,12 +1,13 @@
 # Guitar Chord Book App
 
-Try it out here: http://guitarchordbook.icu  
+Try it out here: https://guitarchordbook.onrender.com/
   
 This app allows you to note down and save the guitar chord progressions of your favorite songs!
 
 - Made with images and API from https://www.scales-chords.com/api/
-- Along with ReactJS and TailwindCSS
-- Deployed on an AWS EC2 instance with Django + MongoDB backend at https://github.com/khanhvu0/guitarapp_backend
+- Using ReactJS and TailwindCSS
+- Django + MongoDB backend at https://github.com/khanhvu0/guitarapp_backend
+- Deployed on Render
 
 <br />
 <br />
