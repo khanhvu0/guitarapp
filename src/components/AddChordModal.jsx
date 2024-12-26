@@ -16,7 +16,7 @@ const AddChordModal = ({ isOpen, onClose, onAddChord, selectedSongIndex }) => {
     try {
       if (chordInput.trim() !== "") {
         const formattedInput = chordInput.replace("#", "%23")
-        const response = await fetch(`https://guitarapp-backend.onrender.com/?chord_name=${formattedInput}`);
+        const response = await fetch(`https://guitarapp-backend.onrender.com/?chord_name=${formattedInput}`, { mode: 'no-cors'});
         if(!response.ok) {
           setVariation("No chord found for " + chordInput[0].toUpperCase() + chordInput.slice(1).toLowerCase())
           setChordImages(null);
